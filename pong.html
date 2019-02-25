@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<style>
+			* { padding: 0; margin: 0; }
+			canvas { background: #eee; display: block; margin: 0; auto; }
+		</style>
+	</head>
+	<body>
+		<h1>Pong</h1>
+		<h3>By Luke Henderson</h3>
+		<br />
+		<p><a href="index.html">Click Here</a> to go home.</p>
+		<br />
+		<canvas id="canvas" width="480" height="320"></canvas>
+		<script>
+			const cnvs = document.getElementById("canvas");
+			const ctx = cnvs.getContext("2d");
+			
+			var x = cnvs.width/2-15;
+			var y = cnvs.height/2-15;
+			var paddlelefty = 100;
+			var paddlerighty = 100;
+			var dx = 2;
+			var dy = -4;
+			var redscore = 0;
+			var bluescore = 0;
+			var Kpressed = false;
+			var Mpressed = false;
+			var Apressed = false;
+			var Zpressed = false;
+			
+			document.addEventListener("keydown", keyDownHandler, false);
+			document.addEventListener("keyup", keyUpHandler, false);
+			
+			function keyDownHandler(e) {
+				if(e.keyCode == 75) {
+					Kpressed = true;
+				}
+				else if(e.keyCode == 77) {
+					Mpressed = true;
+				}
+				if(e.keyCode == 65) {
+					Apressed = true;
+				}
+				else if(e.keyCode == 90) {
+					Zpressed = true;
+				}
+			}
+			
+			function keyUpHandler(e) {
+				if(e.keyCode == 75) {
+					Kpressed = false;
+				}
+				else if(e.keyCode == 77) {
+					Mpressed = false;
+				}
+				if(e.keyCode == 65) {
+					Apressed = false;
+				}
+				else if(e.keyCode == 90) {
+					Zpressed = false;
+				}
+			}
+			
+			function redScore() {
+				ctx.font = "16px Arial";
+				ctx.fillStyle = "0095DD";
+				ctx.fillText("Score: "+redscore, 8, 20);
+			}
+			
+			function blueScore() {
+				ctx.font = "16px Arial";
+				ctx.fillStyle = "0095DD";
+				ctx.fillText("Score: "+bluescore, cnvs.width-80, 20);
+			}
+			
+			function puck() {
+				ctx.beginPath();
+				ctx.rect(x, y, 15, 15);
+				ctx.fillStyle = "#0095DD";
+				ctx.fill();
+				ctx.closePath();
+			}
+			
+			function paddleleft() {
+				ctx.beginPath();
+				ctx.rect(20, paddlelefty, 20, 100);
+				ctx.fillStyle = "#0095DD";
+				ctx.fill();
+				ctx.closePath();
+			}
+			
+			function paddleright() {
+				ctx.beginPath();
+				ctx.rect(440, paddlerighty, 20, 100);
+				ctx.fillStyle = "#0095DD";
+				ctx.fill();
+				ctx.closePath();
+			}
+			
+			function draw() {
+				ctx.clearRect(0, 0, cnvs.width, cnvs.height)
+				puck();
+				paddleleft();
+				paddleright();
+				redScore();
+				blueScore();
+				
+				if (x < 40 && x > 20 && y < paddlelefty+100 && y > paddlelefty)
+					dx = -dx
+					
+				if (x < 460 && x > 440-15 && y < paddlerighty+100 && y > paddlerighty)
+					dx = -dx
+				
+				if (y < 0 || y > cnvs.height-15)
+					dy = -dy;
+					
+				if (x < 0) {
+					x = cnvs.width/2-15;
+					y = cnvs.height/2-15;
+					bluescore++;
+				}
+				
+				if (x > cnvs.width-15) {
+					x = cnvs.width/2-15;
+					y = cnvs.height/2-15;
+					redscore++;
+				}
+				
+				if (paddlelefty <= 0)
+					paddlelefty = 0;
+				if (paddlelefty >= cnvs.height-100)
+					paddlelefty = cnvs.height-100;
+					
+				if (paddlerighty <= 0)
+					paddlerighty = 0;
+				if (paddlerighty >= cnvs.height-100)
+					paddlerighty = cnvs.height-100;
+				
+				if (Apressed)
+					paddlelefty -= 5;
+				else if (Zpressed)
+					paddlelefty += 5;
+				if (Kpressed)
+					paddlerighty -= 5;
+				else if (Mpressed)
+					paddlerighty += 5;
+				
+				x += dx;
+				y += dy;
+				
+				requestAnimationFrame(draw);
+			}
+			draw();
+		</script>
+		<br />
+		<h5>"A" and "Z" keys to control 1st player (player on left).
+		<br />
+		<br />
+		"K" and "M" keys to control 2nd player (player on right).</h5>
+	</body>
+</html>
